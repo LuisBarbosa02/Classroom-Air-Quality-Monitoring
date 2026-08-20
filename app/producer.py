@@ -1,10 +1,19 @@
 # Import libraries
 import logging
-from .config import CSV_PATH, KAFKA_BOOTSTRAP_SERVERS, KAFKA_RETRIES, KAFKA_TOPIC, STREAM_INTERVAL_SECONDS
 import csv
-from confluent_kafka import Producer
 import json
 import time
+
+from confluent_kafka import Producer
+from confluent_kafka.error import KafkaException
+
+from .config import (
+    CSV_PATH,
+    KAFKA_BOOTSTRAP_SERVERS,
+    KAFKA_RETRIES,
+    KAFKA_TOPIC,
+    STREAM_INTERVAL_SECONDS
+)
 
 # Configure logging
 logging.basicConfig(

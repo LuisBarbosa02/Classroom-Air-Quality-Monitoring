@@ -78,3 +78,29 @@ services:
 
 
   # Kafka consumer
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: my-consumer
+
+    command:
+      ['python', '-m', 'app.consumer']
+
+
+  # Kafka producer
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: my-producer
+
+    command:
+      ['python', '-m', 'app.producer']
+
+
+volumes:
+  postgres_data:
+  kafka_data:

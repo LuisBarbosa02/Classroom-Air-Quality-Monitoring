@@ -11,9 +11,10 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy necessary files
-COPY requirements.txt /app/requirements.txt
-COPY app /app/app
-COPY data /app/data
+COPY requirements.txt ./
+COPY app/ ./app/
+COPY data/ ./
+COPY .env ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt

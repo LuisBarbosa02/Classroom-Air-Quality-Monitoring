@@ -13,11 +13,11 @@ WORKDIR /app
 # Copy necessary files
 COPY requirements.txt ./
 COPY app/ ./app/
-COPY data/ ./
+COPY data/ ./data/
 COPY .env ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run command
-CMD ['python', '-m', 'app.consumer']
+CMD ["python", "-m", "app.consumer"]

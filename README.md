@@ -38,6 +38,10 @@ docker compose up -d
 Verify if data is being saved into PostgreSQL:
 ```bash
 docker exec -it my-postgres psql -U myuser -d mydb
+```
+
+Then:
+```bash
 SELECT COUNT(*) FROM classroom_air_quality;
 ```
 

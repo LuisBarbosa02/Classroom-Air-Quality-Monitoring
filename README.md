@@ -2,17 +2,17 @@
 # Classroom Air Quality Monitoring
 
 ## Table of Contents
-1. [Context](https://github.com/LuisBarbosa02/Classroom-Air-Quality-Monitoring)
-2. [How to Use](https://github.com/LuisBarbosa02/Anomaly-Detection?tab=readme-ov-file#how-to-use)
+1. [Context](https://github.com/LuisBarbosa02/Classroom-Air-Quality-Monitoring#context)
+2. [How to Use](https://github.com/LuisBarbosa02/Classroom-Air-Quality-Monitoring#how-to-use)
 
 ## Context
-This project implements a real-time data streaming for monitoring the air's quality for a classroom, based on the Kaggle dataset "Classroom Air Quality."
+This project implements real-time data streaming for monitoring the air quality in a classroom, based on the Kaggle dataset "Classroom Air Quality."
 
 ## How to Use
 ### Installation
 This repository requires Python 3.12.12
 
-Clone and change to repository:
+Clone and change to the repository:
 ```bash
 git clone https://github.com/LuisBarbosa02/Classroom-Air-Quality-Monitoring.git
 cd Classroom-Air-Quality-Monitoring
@@ -35,13 +35,13 @@ Then, run all of the project containers through:
 docker compose up -d
 ```
 
-Verify if data are being saved into PostgreSQL:
+Verify if data is being saved into PostgreSQL:
 ```bash
 docker exec -it my-postgres psql -U myuser -d mydb
 SELECT COUNT(*) FROM classroom_air_quality;
 ```
 
-Shutdown the Docker Compose service:
+Shut down the Docker Compose service:
 ```bash
 docker compose down
 ```

@@ -16,6 +16,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   # Apache Kafka
   kafka:
@@ -32,7 +39,7 @@ services:
 
       # Internal and external listeners
       KAFKA_LISTENERS: CONTROLLER://:9093,PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
 
       # Listener configuration
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
@@ -54,8 +61,23 @@ services:
       # Allow the broker to delete old log segments when necessary
       KAFKA_LOG_SEGMENT_BYTES: 1073741824
 
+      # Internal Kafka topics for a single-broker development setup
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
     volumes:
       - kafka_data:/var/lib/kafka/data
+
+    healthcheck:
+      test:
+        [
+        "CMD-SHELL",
+        "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list > /dev/null 2>&1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 
   # Kafka Topic
@@ -63,18 +85,16 @@ services:
     image: apache/kafka:latest
     container_name: my-kafka-topic
 
-    command: >
-      "
-      /opt/kafka/bin/kafka-topics.sh
-      --bootstrap-server kafka:9092
-      --create
-      --if-not-exists
-      --topic classroom-air-quality
-      --partitions 1
-      --replication-factor 1
-      &&
-      echo 'Kafka topic classroom-air-quality is ready.'
-      "
+    command:
+      [
+      "/bin/bash",
+      "-c",
+      "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic classroom-air-quality --partitions 1 --replication-factor 1 && echo 'Kafka topic classroom-air-quality is ready.'"
+      ]
+
+    depends_on:
+      kafka:
+        condition: service_healthy
 
 
   # Kafka consumer
@@ -88,6 +108,13 @@ services:
     command:
       ['python', '-m', 'app.consumer']
 
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+      kafka-topic:
+        condition: service_completed_successfully
+
 
   # Kafka producer
   producer:
@@ -99,6 +126,10 @@ services:
 
     command:
       ['python', '-m', 'app.producer']
+
+    depends_on:
+      kafka-topic:
+        condition: service_completed_successfully
 
 
 volumes:
